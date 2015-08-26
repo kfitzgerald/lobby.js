@@ -1,0 +1,23 @@
+{
+  "name": "lobby.js",
+  "version": "0.1.0",
+  "description": "Event-driven lobby framework",
+  "main": "index.js",
+  "dependencies": {
+    "joi": "^6.6.1",
+    "shortid": "^2.2.2"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "should": "^7.0.4"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "author": "Kevin Fitzgerald",
+  "license": "MIT",
+  "keywords": [
+    "lobby",
+    "game"
+  ]
+}
