@@ -1,34 +1,34 @@
 
-var Member = require('../lib/member');
+var Room = require('../lib/room');
 
-describe('Member', function() {
+describe('Room', function() {
 
     it('can simply exist', function() {
 
-        var member = new Member();
+        var room = new Room();
 
-        member.should.be.an.Object();
-        member.id.should.be.a.String();
+        room.should.be.an.Object();
+        room.id.should.be.a.String();
     });
 
 
     it('is unique', function() {
 
-        var member1 = new Member(),
-            member2 = new Member();
+        var room1 = new Room(),
+            room2 = new Room();
 
-        member1.id.should.not.equal(member2.id);
+        room1.id.should.not.equal(room2.id);
     });
 
 
     it('can take a proper name', function() {
 
         var name = 'Unit Test',
-            member = new Member({
+            room = new Room({
                 name: name
             });
 
-        member.name.should.equal(name);
+        room.name.should.equal(name);
     });
 
 
@@ -52,16 +52,16 @@ describe('Member', function() {
                     return "hello world";
                 }
             },
-            member = new Member(opts);
+            room = new Room(opts);
 
-        member.should.have.ownProperty('obj').and.be.an.Object().and.ownProperty('unit').is.equal(opts.obj.unit);
-        member.should.have.ownProperty('num').and.be.a.Number().and.is.equal(opts.num);
-        member.should.have.ownProperty('str').and.be.a.String().and.is.equal(opts.str);
-        member.should.have.ownProperty('array').and.be.an.Array().and.is.deepEqual(opts.array);
-        member.should.have.ownProperty('undef').and.be.undefined();
-        member.should.have.ownProperty('nope').and.be.null();
-        member.should.have.ownProperty('deep').and.be.an.Object().and.is.deepEqual(opts.deep);
-        member.should.have.ownProperty('func').and.be.a.Function();
+        room.should.have.ownProperty('obj').and.be.an.Object().and.ownProperty('unit').is.equal(opts.obj.unit);
+        room.should.have.ownProperty('num').and.be.a.Number().and.is.equal(opts.num);
+        room.should.have.ownProperty('str').and.be.a.String().and.is.equal(opts.str);
+        room.should.have.ownProperty('array').and.be.an.Array().and.is.deepEqual(opts.array);
+        room.should.have.ownProperty('undef').and.be.undefined();
+        room.should.have.ownProperty('nope').and.be.null();
+        room.should.have.ownProperty('deep').and.be.an.Object().and.is.deepEqual(opts.deep);
+        room.should.have.ownProperty('func').and.be.a.Function();
     });
 
 
@@ -81,7 +81,7 @@ describe('Member', function() {
 
         for( ; i < badThings.length; i++) {
             try {
-                new Member({ name: badThings[i] });
+                new Room({ name: badThings[i] });
             } catch (e) {
                 e.should.be.an.Error();
             }

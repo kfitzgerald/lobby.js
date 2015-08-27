@@ -9,8 +9,9 @@ describe('Lobby', function() {
 
         lobby.should.be.an.Object();
         lobby.id.should.be.a.String();
-        lobby.rooms.should.be.an.Array();
-        lobby.rooms.should.be.empty();
+        lobby.rooms.should.be.an.Object();
+        lobby.allRooms.should.be.an.Array();
+        lobby.allRooms.should.be.empty();
     });
 
 
@@ -71,7 +72,7 @@ describe('Lobby', function() {
     });
 
 
-    it('cannot have a terrible name', function(done) {
+    it('cannot have a terrible name', function() {
 
         var badThings = [
                 { cannot: 'be an object'},
@@ -93,51 +94,22 @@ describe('Lobby', function() {
             }
         }
 
-        var name = "Unit Test",
-            lobby = new Lobby({name: name});
-
-
-        lobby.on('error', function(err) {
-            // Error expected.
-            err.should.be.an.Error();
-            lobby.name.should.equal(name);
-            done();
-        });
-
-        // Try renaming to something bad
-        lobby.name = { nope: true };
-
-        lobby.name.should.equal(name);
-
     });
 
+    it('cannot clobber internals', function() {
+        var lobby = new Lobby({
+            id: 42,
+            rooms: "nope",
+            allRooms: "nope",
+            openRooms: "nope",
+            closedRooms: "nope"
+        });
 
-    it('has immutable rooms', function() {
-
-        var lobby = new Lobby();
-        var rooms = lobby.rooms,
-            mute = ['lol'];
-
-        rooms.should.be.an.Array();
-        rooms.should.be.empty();
-
-        mute.should.be.an.Array();
-        mute.should.not.be.empty();
-
-
-        mute.should.not.equal(rooms);
-
-        // Attempt to obliterate it
-        lobby.rooms = mute;
-
-        // Make sure it's still the same ol' rooms
-        lobby.rooms.should.not.equal(mute).and.be.empty();
-
-        // Attempt to put our own poop in the pile
-        lobby.rooms.push('nope');
-
-        lobby.rooms.should.be.empty();
-
+        lobby.id.should.be.a.String();
+        lobby.rooms.should.not.be.a.String();
+        lobby.allRooms.should.not.be.a.String();
+        lobby.openRooms.should.not.be.a.String();
+        lobby.closedRooms.should.not.be.a.String();
     });
 
     it('fires open events when constructed', function(done) {
@@ -148,7 +120,7 @@ describe('Lobby', function() {
             }),
             count = 3;
 
-        lobby.on('room_opened', function(room) {
+        lobby.on('room_open', function(room) {
             room.should.not.be.empty().and.instanceOf(Room);
             count--;
             if (count == 0) {
@@ -160,15 +132,15 @@ describe('Lobby', function() {
 
     });
 
-    it('fires open events when constructed', function(done) {
+    it('fires open events when max rooms is smaller than min open', function(done) {
 
         var lobby = new Lobby({
                 minOpenRooms: 3,
-                maxRooms: 10
+                maxRooms: 2
             }),
-            count = 3;
+            count = 2;
 
-        lobby.on('room_opened', function(room) {
+        lobby.on('room_open', function(room) {
             room.should.not.be.empty().and.instanceOf(Room);
             count--;
             if (count == 0) {
@@ -177,6 +149,65 @@ describe('Lobby', function() {
                 throw new Error('Too many rooms opened');
             }
         });
+
+    });
+
+
+    it('fires open events when max rooms is equal to min open', function(done) {
+
+        var lobby = new Lobby({
+                minOpenRooms: 2,
+                maxRooms: 2
+            }),
+            count = 2;
+
+        lobby.on('room_open', function(room) {
+            room.should.not.be.empty().and.instanceOf(Room);
+            count--;
+            if (count == 0) {
+                process.nextTick(done);
+            } else if (count < 0) {
+                throw new Error('Too many rooms opened');
+            }
+        });
+
+    });
+
+
+    it('fires open events when there is no max', function(done) {
+
+        var lobby = new Lobby({
+                minOpenRooms: 20,
+                maxRooms: 0
+            }),
+            count = 20;
+
+        lobby.on('room_open', function(room) {
+            room.should.not.be.empty().and.instanceOf(Room);
+            count--;
+            if (count == 0) {
+                process.nextTick(done);
+            } else if (count < 0) {
+                throw new Error('Too many rooms opened');
+            }
+        });
+
+    });
+
+
+    it('no rooms opened when there min rooms is disabled', function(done) {
+
+        var lobby = new Lobby({
+                minOpenRooms: 0,
+                maxRooms: 0
+            });
+
+        lobby.on('room_open', function(room) {
+            room.should.not.be.empty().and.instanceOf(Room);
+            throw new Error('Too many rooms opened');
+        });
+
+        setTimeout(done, 10);
 
     });
 
