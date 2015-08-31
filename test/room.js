@@ -9,6 +9,7 @@ describe('Room', function() {
 
         room.should.be.an.Object();
         room.id.should.be.a.String();
+        room.name.should.be.a.String();
     });
 
 
@@ -18,6 +19,7 @@ describe('Room', function() {
             room2 = new Room();
 
         room1.id.should.not.equal(room2.id);
+        room1.name.should.not.equal(room2.name);
     });
 
 

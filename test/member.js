@@ -9,6 +9,7 @@ describe('Member', function() {
 
         member.should.be.an.Object();
         member.id.should.be.a.String();
+        member.name.should.be.a.String();
     });
 
 
@@ -18,6 +19,7 @@ describe('Member', function() {
             member2 = new Member();
 
         member1.id.should.not.equal(member2.id);
+        member1.name.should.not.equal(member2.name);
     });
 
 
