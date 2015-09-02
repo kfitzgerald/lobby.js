@@ -14,10 +14,19 @@
   "scripts": {
     "test": "mocha test"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kfitzgerald/lobby.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kfitzgerald/lobby.js/issues"
+  },
   "author": "Kevin Fitzgerald",
   "license": "MIT",
   "keywords": [
     "lobby",
-    "game"
+    "game",
+    "chat",
+    "room"
   ]
 }
