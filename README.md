@@ -2,13 +2,91 @@
 
 Event-driven lobby framework. Very useful for games or anything that allows things to join other things!
 
-## How it works
+# Installing
 
-TODO
+Install with NPM like so:
+
+```sh
+npm install lobby.js
+```
+
+# How it works
+
+Lobby.js consists of three objects: Lobby, Room, and Member. From an onwership perspective, looks kinda like this:
+
+```
++---------+             +-------+             +---------+
+| Lobbies |  --have-->  | Rooms |  --have-->  | Members |
++---------+             +-------+             +---------+
+```
+
+Your application will create a new lobby instance, and hook into its events. 
+
+```js
+// Include the lobby framework
+var lob = require('lobby.js');
+
+// Make a new lobby, configured to the needs of your app
+var lobby = new lob.Lobby({ /* your options here */ });
+
+//
+// Hook into events
+//
+
+lobby.on('room_add', function(room) {
+    // What your app should do when a new room is created
+    
+    // Maybe you would want to tie into the room's events too
+    room.on('member_add', function(member) {
+        // When your app should do when an member joins the room
+    });
+    
+    room.on('member_remove', function(member) {
+        // When your app should do when an member leaves the room
+    });
+    
+    room.on('soft_full', function() {
+        // What your app should do when the room is almost full
+    });
+    
+    room.on('full', function() {
+        // What your app should do when the room is at max capacity
+    });
+    
+    // You could also tie into the room's `open`, `close`, and `end` events here, too
+});
+
+lobby.on('room_open', function(room) {
+    // What your app should do when a room opens, allowing members to join
+});
+
+lobby.on('room_close', function(room) {
+   // What your app should do when a closes, like when it becomes 
+});
+
+lobby.on('room_end', function(room) {
+   // What your app should do when a new room is over
+});
+
+```
+
 
 # Objects
 
 ## `Lobby(options)`
+
+The lobby manages the state of all the rooms. You can let the lobby automatically manage rooms by keeping 
+ a certian amount open at any given time, or manage them entirely yourself.
+  
+When the lobby creates a new room, it will use the `roomOptions` property to configure the new room. You should
+customize these based on your application. See `Room(options)` below for details.
+ 
+The lobby object extends [EventEmitter](https://nodejs.org/docs/latest/api/events.html), so it will emit events.
+
+```js
+var lob = require('lobby.js'),
+    lobby = new lob.Lobby(options);
+```
 
  * `options` – Properties and settings to give the lobby. All properties are optional.
   * `name` – The name of the lobby. Must be a string 1-255 characters long. Defaults to `Lobby <Number>`.
@@ -48,11 +126,42 @@ TODO
  * `room_close` – Emitted when a room closes in the lobby. Event data is: `Room`.  
  * `room_end` – Emitted when a room ends and is removed from the lobby. Event data is: `Room`.  
 
-
-
-
+---
 
 ## `Room(options)`
+
+The room contains members and can change state when members are added and removed. You can configure a room to automatically
+ close or reopen, using the `closeOnFull` and `openWhenNotFull` properties. You can also configure the room to end when 
+ no members are left in the room using `endOnCloseAndEmpty`, useful for last-man-standing situations.
+
+Members can only be added to a room if the room state is open.
+
+When a room ends, consider it dead. Clean up references to the room and let it be purged.
+
+The lobby object can automatically create rooms for your application based on your configuration, or you can bypass the
+lobby entirely and make your own room, if that's your jam.
+ 
+The Room object extends [EventEmitter](https://nodejs.org/docs/latest/api/events.html), so it will emit events.
+
+```js
+var lob = require('lobby.js'),
+    lobby = new lob.Lobby(options);
+    
+lobby.on('room_add', function(room) {
+    // room is now present in the lobby!
+    
+    // Hook into your app. Maybe even add a member!
+    var george = new Member({ name: "George" });
+    room.addMember(george);
+});
+```
+
+Or, if you don't want to let the lobby manage your rooms:
+
+```js
+var lob = require('lobby.js'),
+    room = new lob.Room(options);
+```
 
  * `options`
   * `name` – The name of the room. Must be a string 1-255 characters long. Defaults to `Room <Number>`.
@@ -76,7 +185,6 @@ TODO
  * `openWhenNotFull` – See `Room(options)` for description.
  * `members` – Live object that contains the member instances. Keyed by member `id`.
  * `allMembers` –  Getter that returns an array of all members present in the room.
- 
  
 ### Static Properties
 
@@ -104,38 +212,26 @@ TODO
  * `member_add` – Fired when a member joins the room.
  * `member_remove` – Fired when a member leaves the room.
  
- 
- 
- 
- 
- 
+---
 
 ## `Member(options)`
 
- * `options` – Properties and settings to give the member. All properties are optional.
-  * `name` – The name of the member. Must be a string 1-255 characters long. Defaults to `Member`.
+Members are simply a stub object that you can use to represent a user or thing in your application. All it holds is an 
+id and a name. 
 
-Any key that does not match the following will be attached to the Member instance.
+The Member object extends [EventEmitter](https://nodejs.org/docs/latest/api/events.html), so it could emit events, if you
+make it do so.
 
 ```js
-
-var Member = require('lobbyjs').Member;
-
-// Say someone just joined the app
-// Create a new member to represent the joiner 
-var joiner = new Member({ name: "george", anythingYouLike: 42 });
-
-// You can send in whatever properties are useful to your application.
-// In this case, it anythingYouLike can be accessed like so
-console.log(joiner.anythingYouLike);
-
+var lob = require('lobby.js'),
+    member = new lob.Member(options);
 ```
 
-## Events
-
-
-## Methods
+ * `options` – Properties and settings to give the member. All properties are optional.
+  * `name` – The name of the member. Must be a string 1-255 characters long. Defaults to `Member <Number>`.
+  * `*` – Any other unlisted property given will be set on the Member object, useful for integration with your app.
 
 
 ### Examples
 
+TODO
