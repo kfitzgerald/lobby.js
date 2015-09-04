@@ -2,6 +2,8 @@
 
 Event-driven lobby framework. Very useful for games or anything that allows things to join other things!
 
+[![Build Status](https://travis-ci.org/kfitzgerald/lobby.js.svg)](https://travis-ci.org/kfitzgerald/lobby.js)
+
 # Installing
 
 Install with NPM like so:
