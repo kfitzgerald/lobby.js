@@ -61,11 +61,11 @@ lobby.on('room_open', function(room) {
 });
 
 lobby.on('room_close', function(room) {
-   // What your app should do when a closes, like when it becomes 
+   // What your app should do when a closes, preventing members from joining 
 });
 
 lobby.on('room_end', function(room) {
-   // What your app should do when a new room is over
+   // What your app should do when a room ends and should be cleaned up
 });
 
 ```
@@ -209,15 +209,15 @@ var lob = require('lobby.js'),
  * `end` – Fired when the room has ended and should be purged.
  * `soft_full` – Fired when the number of members present meets the `softMemberCap` threshold.
  * `full` – Fired when the number of members present meets the `memberCap` threshold.
- * `member_add` – Fired when a member joins the room.
- * `member_remove` – Fired when a member leaves the room.
+ * `member_add` – Fired when a member joins the room. Event data is: `Member`.
+ * `member_remove` – Fired when a member leaves the room. Event data is: `Member`.
  
 ---
 
 ## `Member(options)`
 
 Members are simply a stub object that you can use to represent a user or thing in your application. All it holds is an 
-id and a name. 
+id and a name. Members will emit events when joining and leaving rooms. They also hold a list of rooms they are joined to.
 
 The Member object extends [EventEmitter](https://nodejs.org/docs/latest/api/events.html), so it could emit events, if you
 make it do so.
@@ -231,6 +231,24 @@ var lob = require('lobby.js'),
   * `name` – The name of the member. Must be a string 1-255 characters long. Defaults to `Member <Number>`.
   * `*` – Any other unlisted property given will be set on the Member object, useful for integration with your app.
 
+### Properties
+ 
+ * `id` – The unique identifier of the lobby instance. 
+ * `name` - See `Room(options)` for description.
+ * `rooms` – Live object that contains the room instances the member has been added to. Keyed by room `id`.
+ * `allRooms` –  Getter that returns an array of all rooms present in the room.
+ 
+### Static Properties
+
+ * `counter` – Incremented every time a member instance is created.
+ * `schema` – Validation configuration schemas, using [Joi](https://github.com/hapijs/joi).
+  * `options` – The `options` validation schema, used in the Member constructor.
+  
+  
+### Events
+
+ * `room_join` – Fired when the member joins a room. Event data is: `Room`.
+ * `room_leave` – Fired when the member joins a room. Event data is: `Room`.
 
 ### Examples
 

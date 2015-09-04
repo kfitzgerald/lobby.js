@@ -827,11 +827,13 @@ describe('Room', function() {
             var res = room.addMember(member1);
             should(res).be.empty();
 
+            member1.rooms.should.hasOwnProperty(room.id);
             room.allMembers.length.should.be.equal(1);
 
             res = room.addMember(member2);
             should(res).be.empty();
 
+            member2.rooms.should.hasOwnProperty(room.id);
             room.allMembers.length.should.be.equal(2);
 
             // Add duplicate member
@@ -850,9 +852,11 @@ describe('Room', function() {
 
             // These should work
             res = room.removeMember(member1); should(res).be.empty();
+            member1.rooms.should.not.hasOwnProperty(room.id);
             room.allMembers.length.should.be.equal(1);
 
             res = room.removeMember(member2.id); should(res).be.empty();
+            member2.rooms.should.not.hasOwnProperty(room.id);
             room.allMembers.length.should.be.equal(0);
 
             process.nextTick(done);

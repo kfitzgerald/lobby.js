@@ -1,5 +1,7 @@
 
-var Member = require('../lib/member');
+var Member = require('../lib/member'),
+    Room = require('../lib/room'),
+    should = require('should');
 
 describe('Member', function() {
 
@@ -90,6 +92,48 @@ describe('Member', function() {
         }
 
     });
+
+    it('emits join and leave events when interacting with rooms', function(done) {
+
+        var room = new Room(),
+            member = new Member(),
+            added = false,
+            removed = false;
+
+        member.on('room_join', function(room) {
+            arguments.length.should.be.equal(1);
+            room.should.be.instanceOf(Room);
+
+            added.should.be.equal(false);
+            removed.should.be.equal(false);
+            added = true;
+
+            member.rooms.should.hasOwnProperty(room.id);
+            room.members.should.hasOwnProperty(member.id);
+
+            var res = room.removeMember(member);
+            should(res).be.empty();
+
+        });
+
+        member.on('room_leave', function(room) {
+            arguments.length.should.be.equal(1);
+            room.should.be.instanceOf(Room);
+
+            added.should.be.equal(true);
+            removed.should.be.equal(false);
+            removed = true;
+
+            member.rooms.should.not.hasOwnProperty(room.id);
+            room.members.should.not.hasOwnProperty(member.id);
+
+            process.nextTick(done);
+
+        });
+
+        room.addMember(member);
+
+    })
 
 
 });

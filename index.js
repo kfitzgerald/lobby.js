@@ -1,20 +1,16 @@
-/**
- *
- * @type {{Lobby: Lobby, Member: Member, Room: Room}}
- */
 module.exports = {
     /**
-     * @type {Lobby}
+     * @constructs Lobby
      */
     Lobby: require('./lib/lobby'),
 
     /**
-     * @type {Member}
+     * @constructs Member
      */
     Member: require('./lib/member'),
 
     /**
-     * @type {Room}
+     * @constructs Room
      */
     Room: require('./lib/room')
 };

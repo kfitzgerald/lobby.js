@@ -134,6 +134,37 @@ describe('Lobby', function() {
 
     });
 
+    it('spawns unique room numbers', function(done) {
+
+        var lobby = new Lobby({
+                minOpenRooms: 2,
+                maxRooms: 10,
+                roomOptions: {
+                    softMemberCap: 5,
+                    memberCap: 10,
+                    isOpen: true,
+                    closeOnFull: true,
+                    endOnCloseAndEmpty: true,
+                    openWhenNotFull: false
+                }
+            }),
+            count = 2;
+
+        lobby.on('room_open', function(room) {
+            room.should.not.be.empty().and.instanceOf(Room);
+            count--;
+            if (count == 0) {
+
+                lobby.allRooms[0].name.should.not.equal(lobby.allRooms[1].name);
+
+                process.nextTick(done);
+            } else if (count < 0) {
+                throw new Error('Too many rooms opened');
+            }
+        });
+
+    });
+
     it('fires open events when max rooms is smaller than min open', function(done) {
 
         var lobby = new Lobby({
