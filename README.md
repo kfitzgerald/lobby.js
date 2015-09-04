@@ -250,6 +250,39 @@ var lob = require('lobby.js'),
  * `room_join` – Fired when the member joins a room. Event data is: `Room`.
  * `room_leave` – Fired when the member joins a room. Event data is: `Room`.
 
-### Examples
+# Examples
 
-TODO
+Check out the game example in [/examples/game](https://github.com/kfitzgerald/lobby.js/tree/master/examples/game).
+
+To run it, you'll need to fork or clone the repository, install the dependencies, and run the example server.
+
+The best way to do this is in a terminal window, like a pro.
+
+```sh
+# clone the repo
+git clone https://github.com/kfitzgerald/lobby.js.git
+
+# get into the repo and install all the dependencies
+cd lobby.js
+npm install
+
+# get into the game example directory, and run the example
+cd examples/game
+node .
+```
+
+Once running, point your browser to [http://localhost:3000/](http://localhost:3000/)
+
+What you'll see, is a simple UI to give your name and view the lobby UI. You'll be able to join a room and 
+view the realtime updates to the lobby.
+
+Now, you can have lots more fun with it by having two browser windows open at the same time. When doing this, youll be
+able to join both clients to the same room to fill it up. When both players leave, the room ends and goes away.
+
+This example illustrates how the lobby attempts to keep a certian amount of rooms open at any given time, and creates
+new rooms when other rooms end.
+
+The best metaphore to describe this is that a room represents the game instance, and when the game is over 
+(say last man standing) the room/game ends and a new open room jumps in to take its place.
+
+Enjoy and good luck!
